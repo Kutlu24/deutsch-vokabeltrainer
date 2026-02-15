@@ -280,9 +280,17 @@ function showTypingQuiz() {
     const word = filteredWords[currentIndex];
     document.getElementById('typingGrammar').textContent = word.grammatik;
     document.getElementById('typingExample').textContent = word.beispiel;
-    document.getElementById('typingInput').value = '';
-    document.getElementById('typingInput').className = 'typing-quiz-input';
-    document.getElementById('typingInput').disabled = false;
+    
+    const input = document.getElementById('typingInput');
+    input.value = '';
+    input.className = 'typing-quiz-input';
+    input.disabled = false;
+    input.readOnly = false;
+    
+    // Focus auf Input setzen
+    setTimeout(() => {
+        input.focus();
+    }, 100);
     
     const progress = ((currentIndex + 1) / filteredWords.length) * 100;
     document.getElementById('typingProgressFill').style.width = `${progress}%`;

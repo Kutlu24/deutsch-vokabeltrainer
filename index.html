@@ -306,6 +306,10 @@
             overflow: hidden;
         }
 
+        #typingCard, #reviewCard {
+            cursor: default;
+        }
+
         .card::before {
             content: '';
             position: absolute;
@@ -509,6 +513,9 @@
             border-radius: 15px;
             margin-top: 20px;
             transition: all 0.3s;
+            position: relative;
+            z-index: 10;
+            cursor: text;
         }
 
         .typing-quiz-input:focus {
