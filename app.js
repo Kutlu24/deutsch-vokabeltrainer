@@ -1,6 +1,4 @@
-// Glob
-
-ale Variablen
+// Globale Variablen
 let allWords = [];
 let filteredWords = [];
 let currentIndex = 0;
@@ -76,7 +74,15 @@ function populateFilters() {
     const lektions = [...new Set(allWords.map(w => w.lektion))].sort((a, b) => a - b);
     const teils = [...new Set(allWords.map(w => w.teil))].sort((a, b) => a - b);
 
+    console.log('Lektions gefunden:', lektions);
+    console.log('Teils gefunden:', teils);
+
     const lektionSelect = document.getElementById('lektionFilter');
+    if (!lektionSelect) {
+        console.error('lektionFilter element nicht gefunden!');
+        return;
+    }
+    
     lektions.forEach(l => {
         const option = document.createElement('option');
         option.value = l;
@@ -85,12 +91,19 @@ function populateFilters() {
     });
 
     const teilSelect = document.getElementById('teilFilter');
+    if (!teilSelect) {
+        console.error('teilFilter element nicht gefunden!');
+        return;
+    }
+    
     teils.forEach(t => {
         const option = document.createElement('option');
         option.value = t;
         option.textContent = `Teil ${t}`;
         teilSelect.appendChild(option);
     });
+    
+    console.log('Filter befüllt: ', lektions.length, 'Lektions,', teils.length, 'Teils');
 }
 
 // Filter anwenden
@@ -611,3 +624,4 @@ document.addEventListener('keydown', (e) => {
 
 // App starten
 loadWords();
+;
