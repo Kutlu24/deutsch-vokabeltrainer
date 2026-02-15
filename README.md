@@ -1,2 +1,3 @@
-# deutsch-vokabeltrainer
-DEUTSCH C1 WÖRTER
+# Deutsch-Vokabeltrainer
+C1 WÖRTER
+Generiert mit ...
