@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deutsch Vokabeltrainer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .stat-item {
+            background: rgba(255,255,255,0.2);
+            padding: 10px 20px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .controls {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 20px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            padding: 12px 24px;
+            border: none;
+            background: #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .tab.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .filters {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        label {
+            font-weight: 600;
+            color: #555;
+            font-size: 14px;
+        }
+
+        select, input {
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        select:focus, input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            padding: 40px;
+            min-height: 350px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.3s;
+            position: relative;
+        }
+
+        .card:hover {
+            transform: scale(1.02);
+        }
+
+        .card-front, .card-back {
+            width: 100%;
+        }
+
+        .card-word {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+
+        .card-grammar {
+            font-size: 1.1rem;
+            color: #764ba2;
+            margin-bottom: 15px;
+            font-style: italic;
+        }
+
+        .card-example {
+            font-size: 1.2rem;
+            color: #555;
+            line-height: 1.6;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .card-meta {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .badge {
+            background: #667eea;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+
+        .audio-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 18px;
+            cursor: pointer;
+            margin-top: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+        }
+
+        .audio-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            gap: 10px;
+        }
+
+        .quiz-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        .quiz-option {
+            padding: 20px;
+            background: #f0f0f0;
+            border: 3px solid transparent;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 16px;
+        }
+
+        .quiz-option:hover {
+            background: #e0e0e0;
+        }
+
+        .quiz-option.correct {
+            background: #4caf50;
+            color: white;
+            border-color: #2e7d32;
+        }
+
+        .quiz-option.wrong {
+            background: #f44336;
+            color: white;
+            border-color: #c62828;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.3s;
+        }
+
+        .flip-hint {
+            position: absolute;
+            bottom: 20px;
+            font-size: 14px;
+            color: #999;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            .card-word {
+                font-size: 2rem;
+            }
+            .card {
+                padding: 30px 20px;
+            }
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🇩🇪 Deutsch Vokabeltrainer</h1>
+            <div class="stats">
+                <div class="stat-item">
+                    📚 Gesamt: <strong id="totalWords">0</strong> Wörter
+                </div>
+                <div class="stat-item">
+                    ✅ Gelernt: <strong id="learnedWords">0</strong>
+                </div>
+                <div class="stat-item">
+                    🎯 Übrig: <strong id="remainingWords">0</strong>
+                </div>
+            </div>
+        </header>
+
+        <div class="controls">
+            <div class="tabs">
+                <button class="tab active" data-mode="flashcard">📇 Lernkarten</button>
+                <button class="tab" data-mode="quiz">🎯 Quiz</button>
+            </div>
+
+            <div class="filters">
+                <div class="filter-group">
+                    <label for="lektionFilter">Lektion</label>
+                    <select id="lektionFilter">
+                        <option value="all">Alle</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="teilFilter">Teil</label>
+                    <select id="teilFilter">
+                        <option value="all">Alle</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="searchInput">Suchen</label>
+                    <input type="text" id="searchInput" placeholder="Wort suchen...">
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="btn-primary" id="shuffleBtn">🔀 Mischen</button>
+                <button class="btn-secondary" id="resetProgressBtn">🔄 Fortschritt zurücksetzen</button>
+            </div>
+        </div>
+
+        <div id="flashcardMode">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+            </div>
+
+            <div class="card" id="flashcard">
+                <div class="card-front" id="cardFront">
+                    <div class="card-word" id="wordText">Wörter werden geladen...</div>
+                    <div class="card-meta">
+                        <span class="badge" id="lektionBadge">Lektion -</span>
+                        <span class="badge" id="teilBadge">Teil -</span>
+                    </div>
+                    <button class="audio-btn" id="audioBtn">
+                        🔊 Anhören
+                    </button>
+                    <div class="flip-hint">👆 Klicken zum Umdrehen</div>
+                </div>
+                <div class="card-back hidden" id="cardBack">
+                    <div class="card-word" id="wordTextBack"></div>
+                    <div class="card-grammar" id="grammarText"></div>
+                    <div class="card-example" id="exampleText"></div>
+                    <div class="card-meta">
+                        <span class="badge" id="lektionBadgeBack">Lektion -</span>
+                        <span class="badge" id="teilBadgeBack">Teil -</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="navigation">
+                <button class="btn-secondary" id="prevBtn">⬅️ Zurück</button>
+                <button class="btn-primary" id="markLearnedBtn">✅ Gelernt</button>
+                <button class="btn-secondary" id="nextBtn">Weiter ➡️</button>
+            </div>
+        </div>
+
+        <div id="quizMode" class="hidden">
+            <div class="progress-bar">
+                <div class="progress-fill" id="quizProgressFill" style="width: 0%"></div>
+            </div>
+
+            <div class="card" id="quizCard">
+                <div class="card-word" id="quizWord">Quiz wird geladen...</div>
+                <button class="audio-btn" id="quizAudioBtn">
+                    🔊 Anhören
+                </button>
+                <div class="quiz-options" id="quizOptions">
+                    <!-- Optionen werden hier eingefügt -->
+                </div>
+            </div>
+
+            <div class="navigation">
+                <button class="btn-secondary" id="quizPrevBtn">⬅️ Zurück</button>
+                <div style="text-align: center;">
+                    <strong id="quizScore">Punktzahl: 0/0</strong>
+                </div>
+                <button class="btn-secondary" id="quizNextBtn">Weiter ➡️</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Globale Variablen
+        let allWords = [];
+        let filteredWords = [];
+        let currentIndex = 0;
+        let learnedWords = new Set();
+        let isFlipped = false;
+        let currentMode = 'flashcard';
+        let quizScore = 0;
+        let quizAnswered = 0;
+
+        // Fortschritt aus LocalStorage laden
+        function loadProgress() {
+            const saved = localStorage.getItem('learnedWords');
+            if (saved) {
+                learnedWords = new Set(JSON.parse(saved));
+            }
+        }
+
+        // Fortschritt speichern
+        function saveProgress() {
+            localStorage.setItem('learnedWords', JSON.stringify([...learnedWords]));
+        }
+
+        // Wörter laden
+        async function loadWords() {
+            try {
+                const response = await fetch('kelimeler_web.json');
+                allWords = await response.json();
+                initializeApp();
+            } catch (error) {
+                console.error('Wörter konnten nicht geladen werden:', error);
+                alert('Fehler beim Laden der Wörter!');
+            }
+        }
+
+        // Anwendung initialisieren
+        function initializeApp() {
+            loadProgress();
+            populateFilters();
+            applyFilters();
+            updateStats();
+            showCard();
+        }
+
+        // Filter befüllen
+        function populateFilters() {
+            const lektions = [...new Set(allWords.map(w => w.lektion))].sort((a, b) => a - b);
+            const teils = [...new Set(allWords.map(w => w.teil))].sort((a, b) => a - b);
+
+            const lektionSelect = document.getElementById('lektionFilter');
+            lektions.forEach(l => {
+                const option = document.createElement('option');
+                option.value = l;
+                option.textContent = `Lektion ${l}`;
+                lektionSelect.appendChild(option);
+            });
+
+            const teilSelect = document.getElementById('teilFilter');
+            teils.forEach(t => {
+                const option = document.createElement('option');
+                option.value = t;
+                option.textContent = `Teil ${t}`;
+                teilSelect.appendChild(option);
+            });
+        }
+
+        // Filter anwenden
+        function applyFilters() {
+            const lektionFilter = document.getElementById('lektionFilter').value;
+            const teilFilter = document.getElementById('teilFilter').value;
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+
+            filteredWords = allWords.filter(word => {
+                const matchLektion = lektionFilter === 'all' || word.lektion == lektionFilter;
+                const matchTeil = teilFilter === 'all' || word.teil == teilFilter;
+                const matchSearch = searchTerm === '' || 
+                    word.wort.toLowerCase().includes(searchTerm) ||
+                    word.grammatik.toLowerCase().includes(searchTerm) ||
+                    word.beispiel.toLowerCase().includes(searchTerm);
+                
+                return matchLektion && matchTeil && matchSearch;
+            });
+
+            currentIndex = 0;
+            updateStats();
+            
+            if (currentMode === 'flashcard') {
+                showCard();
+            } else {
+                showQuiz();
+            }
+        }
+
+        // Statistiken aktualisieren
+        function updateStats() {
+            document.getElementById('totalWords').textContent = filteredWords.length;
+            document.getElementById('learnedWords').textContent = 
+                filteredWords.filter(w => learnedWords.has(w.id)).length;
+            document.getElementById('remainingWords').textContent = 
+                filteredWords.filter(w => !learnedWords.has(w.id)).length;
+        }
+
+        // Karte anzeigen
+        function showCard() {
+            if (filteredWords.length === 0) {
+                document.getElementById('wordText').textContent = 'Keine Wörter gefunden';
+                return;
+            }
+
+            const word = filteredWords[currentIndex];
+            isFlipped = false;
+
+            // Vorderseite
+            document.getElementById('wordText').textContent = word.wort;
+            document.getElementById('lektionBadge').textContent = `Lektion ${word.lektion}`;
+            document.getElementById('teilBadge').textContent = `Teil ${word.teil}`;
+
+            // Rückseite
+            document.getElementById('wordTextBack').textContent = word.wort;
+            document.getElementById('grammarText').textContent = word.grammatik;
+            document.getElementById('exampleText').textContent = word.beispiel;
+            document.getElementById('lektionBadgeBack').textContent = `Lektion ${word.lektion}`;
+            document.getElementById('teilBadgeBack').textContent = `Teil ${word.teil}`;
+
+            // Ansicht
+            document.getElementById('cardFront').classList.remove('hidden');
+            document.getElementById('cardBack').classList.add('hidden');
+
+            // Fortschrittsbalken
+            const progress = ((currentIndex + 1) / filteredWords.length) * 100;
+            document.getElementById('progressFill').style.width = `${progress}%`;
+
+            // Gelernt-Button Status
+            const learnedBtn = document.getElementById('markLearnedBtn');
+            if (learnedWords.has(word.id)) {
+                learnedBtn.textContent = '❌ Als ungelernt markieren';
+            } else {
+                learnedBtn.textContent = '✅ Gelernt';
+            }
+        }
+
+        // Karte umdrehen
+        function flipCard() {
+            isFlipped = !isFlipped;
+            if (isFlipped) {
+                document.getElementById('cardFront').classList.add('hidden');
+                document.getElementById('cardBack').classList.remove('hidden');
+            } else {
+                document.getElementById('cardFront').classList.remove('hidden');
+                document.getElementById('cardBack').classList.add('hidden');
+            }
+        }
+
+        // Audio abspielen
+        function playAudio() {
+            const word = filteredWords[currentIndex];
+            if (word && word.audio) {
+                const audio = new Audio(`sesler/${word.audio}`);
+                audio.play().catch(e => console.error('Audio konnte nicht abgespielt werden:', e));
+            }
+        }
+
+        // Quiz anzeigen
+        function showQuiz() {
+            if (filteredWords.length === 0) {
+                document.getElementById('quizWord').textContent = 'Keine Wörter gefunden';
+                return;
+            }
+
+            const correctWord = filteredWords[currentIndex];
+            
+            // 3 falsche Optionen erstellen
+            const wrongWords = allWords
+                .filter(w => w.id !== correctWord.id)
+                .sort(() => Math.random() - 0.5)
+                .slice(0, 3);
+
+            const options = [correctWord, ...wrongWords].sort(() => Math.random() - 0.5);
+
+            // Quiz UI aktualisieren
+            document.getElementById('quizWord').textContent = correctWord.wort;
+            
+            const optionsContainer = document.getElementById('quizOptions');
+            optionsContainer.innerHTML = '';
+
+            options.forEach(option => {
+                const div = document.createElement('div');
+                div.className = 'quiz-option';
+                div.textContent = option.beispiel;
+                div.onclick = () => checkAnswer(option.id === correctWord.id, div);
+                optionsContainer.appendChild(div);
+            });
+
+            // Fortschritt
+            const progress = ((currentIndex + 1) / filteredWords.length) * 100;
+            document.getElementById('quizProgressFill').style.width = `${progress}%`;
+        }
+
+        // Quiz-Antwort überprüfen
+        function checkAnswer(isCorrect, element) {
+            const options = document.querySelectorAll('.quiz-option');
+            options.forEach(opt => opt.style.pointerEvents = 'none');
+
+            if (isCorrect) {
+                element.classList.add('correct');
+                quizScore++;
+            } else {
+                element.classList.add('wrong');
+                // Richtige Antwort anzeigen
+                options.forEach(opt => {
+                    if (opt.textContent === filteredWords[currentIndex].beispiel) {
+                        opt.classList.add('correct');
+                    }
+                });
+            }
+
+            quizAnswered++;
+            document.getElementById('quizScore').textContent = `Punktzahl: ${quizScore}/${quizAnswered}`;
+
+            setTimeout(() => {
+                if (currentIndex < filteredWords.length - 1) {
+                    currentIndex++;
+                    showQuiz();
+                } else {
+                    alert(`Quiz abgeschlossen!\nPunktzahl: ${quizScore}/${quizAnswered}\nProzent: ${Math.round((quizScore/quizAnswered)*100)}%`);
+                }
+            }, 2000);
+        }
+
+        // Quiz-Audio abspielen
+        function playQuizAudio() {
+            const word = filteredWords[currentIndex];
+            if (word && word.audio) {
+                const audio = new Audio(`sesler/${word.audio}`);
+                audio.play().catch(e => console.error('Audio konnte nicht abgespielt werden:', e));
+            }
+        }
+
+        // Event listeners
+        document.getElementById('flashcard').addEventListener('click', flipCard);
+        document.getElementById('audioBtn').addEventListener('click', (e) => {
+            e.stopPropagation();
+            playAudio();
+        });
+
+        document.getElementById('quizAudioBtn').addEventListener('click', (e) => {
+            e.stopPropagation();
+            playQuizAudio();
+        });
+
+        document.getElementById('prevBtn').addEventListener('click', () => {
+            if (currentIndex > 0) {
+                currentIndex--;
+                showCard();
+            }
+        });
+
+        document.getElementById('nextBtn').addEventListener('click', () => {
+            if (currentIndex < filteredWords.length - 1) {
+                currentIndex++;
+                showCard();
+            }
+        });
+
+        document.getElementById('quizPrevBtn').addEventListener('click', () => {
+            if (currentIndex > 0) {
+                currentIndex--;
+                showQuiz();
+            }
+        });
+
+        document.getElementById('quizNextBtn').addEventListener('click', () => {
+            if (currentIndex < filteredWords.length - 1) {
+                currentIndex++;
+                showQuiz();
+            }
+        });
+
+        document.getElementById('markLearnedBtn').addEventListener('click', () => {
+            const word = filteredWords[currentIndex];
+            if (learnedWords.has(word.id)) {
+                learnedWords.delete(word.id);
+            } else {
+                learnedWords.add(word.id);
+            }
+            saveProgress();
+            updateStats();
+            showCard();
+        });
+
+        document.getElementById('shuffleBtn').addEventListener('click', () => {
+            filteredWords.sort(() => Math.random() - 0.5);
+            currentIndex = 0;
+            if (currentMode === 'flashcard') {
+                showCard();
+            } else {
+                showQuiz();
+            }
+        });
+
+        document.getElementById('resetProgressBtn').addEventListener('click', () => {
+            if (confirm('Der gesamte Fortschritt wird zurückgesetzt. Sind Sie sicher?')) {
+                learnedWords.clear();
+                saveProgress();
+                updateStats();
+                showCard();
+            }
+        });
+
+        // Filtre event listeners
+        document.getElementById('lektionFilter').addEventListener('change', applyFilters);
+        document.getElementById('teilFilter').addEventListener('change', applyFilters);
+        document.getElementById('searchInput').addEventListener('input', applyFilters);
+
+        // Modus wechseln
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+
+                currentMode = tab.dataset.mode;
+                currentIndex = 0;
+
+                if (currentMode === 'flashcard') {
+                    document.getElementById('flashcardMode').classList.remove('hidden');
+                    document.getElementById('quizMode').classList.add('hidden');
+                    showCard();
+                } else {
+                    document.getElementById('flashcardMode').classList.add('hidden');
+                    document.getElementById('quizMode').classList.remove('hidden');
+                    quizScore = 0;
+                    quizAnswered = 0;
+                    document.getElementById('quizScore').textContent = 'Punktzahl: 0/0';
+                    showQuiz();
+                }
+            });
+        });
+
+        // Tastaturkürzel
+        document.addEventListener('keydown', (e) => {
+            if (currentMode === 'flashcard') {
+                if (e.key === 'ArrowLeft' && currentIndex > 0) {
+                    currentIndex--;
+                    showCard();
+                } else if (e.key === 'ArrowRight' && currentIndex < filteredWords.length - 1) {
+                    currentIndex++;
+                    showCard();
+                } else if (e.key === ' ') {
+                    e.preventDefault();
+                    flipCard();
+                } else if (e.key === 'Enter') {
+                    playAudio();
+                }
+            }
+        });
+
+        // Anwendung starten
+        loadWords();
+    </script>
+</body>
+</html>
+ipt>
+</body>
+</html>
+html>
+tml>
+html>
+>
+>
+
+>
+
+
+>
+
+
+
+>
+
+
+
+
+
