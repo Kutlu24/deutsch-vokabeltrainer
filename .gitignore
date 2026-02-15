@@ -1,0 +1,39 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+*.egg-info/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Flask/Backend (artık kullanılmıyor)
+app.py
+app1.py
+templates/
+static/
+
+# JSON backups
+kelimeler.json
+grammatik_*.json
+konjunktiv_*.json
+wortschatz_*.json
+
+# Excel source (isteğe bağlı - yorum satırını kaldırırsanız Excel yüklenmez)
+# vokabelliste-web-14.2.2026.xlsx
+
+# Project notes
+Projede Nerede Kaldık.txt
